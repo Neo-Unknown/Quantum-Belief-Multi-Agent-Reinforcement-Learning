@@ -10,7 +10,7 @@
 [![PyTorch](https://img.shields.io/badge/RL-PyTorch%20DQN-EE4C2C)]()
 [![Pygame](https://img.shields.io/badge/viz-pygame-00b894)]()
 [![Status](https://img.shields.io/badge/ablation-3000%20episodes%20✓-success)]()
-[![LICENSE](https://img.shields.io/badge/license-MIT-lightgrey)]()
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)]()
 
 </div>
 
