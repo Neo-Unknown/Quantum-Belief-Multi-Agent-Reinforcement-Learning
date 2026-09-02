@@ -110,11 +110,11 @@ python visualize.py --policy dqn_meta         # DQN + metacognitive controller
 ## 🗺️ The world
 
 ```
-        ┌────────────────────────────┐
+        ┌─────────────────────────────┐
         │  5 × 5 rooms                │
         │  each a 3×3 searchable grid │  ← 225 total searchable spots
         │  1 hidden target room       │
-        └────────────────────────────┘
+        └─────────────────────────────┘
 ```
 
 - **Clues:** exactly 1 real ROW clue + 1 real COLUMN clue (guaranteed
@@ -164,18 +164,18 @@ its decision — overriding the base policy (heuristic or DQN) rather than
 leaving it to chance.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  MetacognitiveController.act()                            │
+┌─────────────────────────────────────────────────────────────┐
+│  MetacognitiveController.act()                              │
 │                                                             │
-│  low confidence + candidates untried + evidence gatherable │
-│      → DEFER, explore directly (bypasses base policy)      │
+│  low confidence + candidates untried + evidence gatherable  │
+│      → DEFER, explore directly (bypasses base policy)       │
 │                                                             │
 │  entropy just spiked (post-disturbance, unsettled)          │
 │      → DEFER, don't act on a belief mid-disturbance         │
 │                                                             │
 │  otherwise (confident / no evidence left / urgency)         │
 │      → hand off to base policy, let it commit               │
-└─────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────┘
 ```
 
 Every override is logged with its reason (`.controller.overrides`) — an
