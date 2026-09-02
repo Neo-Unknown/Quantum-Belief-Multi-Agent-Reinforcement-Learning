@@ -15,11 +15,11 @@ at that moment.
 We build this literally with QuTiP: a Bell state |00>+|11> (perfectly
 correlated) if the target is in the top half, or |01>+|10> (perfectly
 anti-correlated) if it's in the bottom half -- so which Bell state we
-started in encodes the fact, invisibly, until measured. `measure()` uses
-a real partial trace (`Qobj.ptrace`) to get each agent's local marginal
+started in encodes the fact, invisibly, until measured. 
+
+`measure()` uses a real partial trace (`Qobj.ptrace`) to get each agent's local marginal
 probabilities before sampling an outcome, exactly as a physical
 measurement on one half of a Bell pair would be computed.
-
 Each agent can measure this at most once per episode via the SENSE
 action (see env.py) -- whichever agent senses first "uses up" the
 entanglement for both.

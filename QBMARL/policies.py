@@ -21,8 +21,9 @@ IMPORTANT bug this avoids: picking the next room to explore by checking
 `env.fully_searched` (has this agent actually checked every spot here) is
 a trap -- an agent that only passes THROUGH a room (e.g. while carrying
 something) marks it visited without searching it, and then permanently
-skips it later even once it knows that room needs a second look. This
-policy always targets by search-completeness, not mere presence.
+skips it later even once it knows that room needs a second look. 
+
+This policy always targets by search-completeness, not mere presence.
 """
 
 import random
