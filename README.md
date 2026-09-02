@@ -26,26 +26,27 @@
 | **B** — collapse + passive metacog. features | 7.8% | 6.3–9.6% |
 | **C** — collapse + **explicit** metacog. controller | 🏆 **24.4%** | 21.8–27.2% |
 
-`A vs C: p < 0.0001` &nbsp;•&nbsp; `B vs C: p < 0.0001` &nbsp;•&nbsp; `Cohen's h = 0.64 (medium)` — see [Final result](#-final-result-3000-episode-3-model-ablation) for the full breakdown, including *why* it wins, not just that it does.
+`A vs C: p < 0.0001` &nbsp;•&nbsp; `B vs C: p < 0.0001` &nbsp;•&nbsp; `Cohen's h = 0.64 (medium)` — see [Final result](#final-result) for the full breakdown, including *why* it wins, not just that it does.
 
 ---
 
 ## 📖 Table of contents
 
-- [What this is](#-what-this-is)
-- [Quick start](#-quick-start)
-- [The world](#-the-world)
-- [Why quantum formalism, not classical probability](#-why-belief-is-represented-with-quantum-formalism)
-- [Metacognitive control layer](#-metacognitive-control-layer)
-- [The ablation: Models A / B / C](#-the-ablation-models-a--b--c)
-- [Final result](#-final-result-3000-episode-3-model-ablation)
-- [Failure modes handled by design](#-failure-modes-handled-by-design)
-- [Entanglement correctness](#-entanglement-correctness)
-- [File guide](#-file-guide)
-- [Known open items](#-known-open-items)
+- [What this is](#what-this-is)
+- [Quick start](#quick-start)
+- [The world](#the-world)
+- [Why quantum formalism, not classical probability](#why-quantum-formalism)
+- [Metacognitive control layer](#metacognitive-control-layer)
+- [The ablation: Models A / B / C](#the-ablation)
+- [Final result](#final-result)
+- [Failure modes handled by design](#failure-modes)
+- [Entanglement correctness](#entanglement-correctness)
+- [File guide](#file-guide)
+- [Known open items](#known-open-items)
 
 ---
 
+<a id="what-this-is"></a>
 ## 🔍 What this is
 
 A multi-agent RL testbed where each agent's uncertainty about a hidden
@@ -63,6 +64,7 @@ No LLM. No Ollama. No Node/React. Pure Python, fully offline, instant.
 
 ---
 
+<a id="quick-start"></a>
 ## 🚀 Quick start
 
 ```bash
@@ -82,9 +84,9 @@ python visualize.py               # watch two agents solve it live
 <summary><b>Reproduce the full ablation from scratch</b></summary>
 
 ```bash
-python train.py --episodes 3000                       # single-agent DQN training loop
-python compare_models.py --episodes 3000               # 3-way A/B/C ablation, checkpointed
-python analyze_compare.py compare_log.csv --tail 500    # stats: z-test, Cohen's h, Mann-Whitney
+python train.py --episodes 3000                        # single-agent DQN training loop
+python compare_models.py --episodes 3000                # 3-way A/B/C ablation, checkpointed
+python analyze_compare.py compare_log.csv --tail 500     # stats: z-test, Cohen's h, Mann-Whitney
 ```
 
 `compare_models.py` and `train.py` are both resumable (`--resume`) and
@@ -107,14 +109,15 @@ python visualize.py --policy dqn_meta         # DQN + metacognitive controller
 
 ---
 
+<a id="the-world"></a>
 ## 🗺️ The world
 
 ```
-        ┌─────────────────────────────┐
-        │  5 × 5 rooms                │
-        │  each a 3×3 searchable grid │  ← 225 total searchable spots
-        │  1 hidden target room       │
-        └─────────────────────────────┘
+┌──────────────────────────────┐
+│  5 × 5 rooms                 │
+│  each a 3×3 searchable grid  │  ← 225 total searchable spots
+│  1 hidden target room        │
+└──────────────────────────────┘
 ```
 
 - **Clues:** exactly 1 real ROW clue + 1 real COLUMN clue (guaranteed
@@ -132,6 +135,7 @@ python visualize.py --policy dqn_meta         # DQN + metacognitive controller
 
 ---
 
+<a id="why-quantum-formalism"></a>
 ## ⚛️ Why belief is represented with quantum formalism
 
 A plain classical `row_candidates` list (every clue value ever seen,
@@ -151,6 +155,7 @@ equally weighted) can't produce any of the following. `quantum_mind.py` +
 
 ---
 
+<a id="metacognitive-control-layer"></a>
 ## 🧭 Metacognitive control layer
 
 Exposing `entropy_trend()` / `confidence()` as extra *observation*
@@ -168,13 +173,13 @@ leaving it to chance.
 │  MetacognitiveController.act()                              │
 │                                                             │
 │  low confidence + candidates untried + evidence gatherable  │
-│      → DEFER, explore directly (bypasses base policy)       │
+│      -> DEFER, explore directly (bypasses base policy)      │
 │                                                             │
 │  entropy just spiked (post-disturbance, unsettled)          │
-│      → DEFER, don't act on a belief mid-disturbance         │
+│      -> DEFER, don't act on a belief mid-disturbance        │
 │                                                             │
 │  otherwise (confident / no evidence left / urgency)         │
-│      → hand off to base policy, let it commit               │
+│      -> hand off to base policy, let it commit              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -190,6 +195,7 @@ deliberation-vs-mistakes trade-off.
 
 ---
 
+<a id="the-ablation"></a>
 ## 🧪 The ablation: Models A / B / C
 
 `env.py` exposes two flags — `enable_collapse`, `metacognition` — so the
@@ -210,6 +216,7 @@ passively exposing the same signal as an observation feature. A vs.
 
 ---
 
+<a id="final-result"></a>
 ## 🏆 Final result: 3000-episode, 3-model ablation
 
 Two safeguards make this ablation meaningful rather than noise-dominated:
@@ -243,9 +250,9 @@ hits its floor** — C doesn't:
 
 ```
 Post-epsilon-floor collapse check:
-  A_no_collapse        pre-floor=16.2%  post-floor=4.9%    ⚠️  >50% drop
-  B_collapse_metacog    pre-floor=22.9%  post-floor=8.2%    ⚠️  >50% drop
-  C_meta_controller      pre-floor=28.7%  post-floor=23.5%   ✅ no collapse
+  A_no_collapse        pre-floor=16.2%  post-floor=4.9%    <- >50% drop
+  B_collapse_metacog    pre-floor=22.9%  post-floor=8.2%    <- >50% drop
+  C_meta_controller      pre-floor=28.7%  post-floor=23.5%   <- no collapse
 ```
 
 Consistent with the DQN converging to a degenerate, repetitive greedy
@@ -264,6 +271,7 @@ settling into the trap.
 
 ---
 
+<a id="failure-modes"></a>
 ## 🛡️ Failure modes handled by design
 
 | Failure mode | Why it's dangerous | Guard |
@@ -275,6 +283,7 @@ settling into the trap.
 
 ---
 
+<a id="entanglement-correctness"></a>
 ## 🔗 Entanglement correctness
 
 `EntangledHalfBelief.measure()` physically collapses the pair for **both**
@@ -287,16 +296,17 @@ lone local outcome is exactly 50/50 and carries zero information).
 
 ```text
 After only Agent A measures:
-  both_measured():      False   ✓ correct — B never measured
-  resolved_top_half():  None    ✓ correct — no information leaked
+  both_measured():      False   [correct — B never measured]
+  resolved_top_half():  None    [correct — no information leaked]
 
 After Agent B also measures:
   both_measured():      True
-  resolved_top_half():  True    ✓ correct — matches the true target half
+  resolved_top_half():  True    [correct — matches the true target half]
 ```
 
 ---
 
+<a id="file-guide"></a>
 ## 📁 File guide
 
 | File | Purpose |
@@ -318,6 +328,7 @@ After Agent B also measures:
 
 ---
 
+<a id="known-open-items"></a>
 ## 🚧 Known open items
 
 - `visualize.py` is full pygame rather than a simplified renderer.
