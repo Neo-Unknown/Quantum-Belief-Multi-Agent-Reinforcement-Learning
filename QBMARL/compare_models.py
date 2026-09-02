@@ -45,6 +45,7 @@ measured difference in behavior comes from the mechanism being tested,
 not from harder or easier worlds landing on one model by chance.
 
 Run: python compare_models.py --episodes 400
+
 Saves: compare_log.csv (per-episode rows tagged by model), and prints a
 summary table at the end.
 
@@ -337,6 +338,7 @@ def main(num_episodes, base_seed, log_path, resume=False):
     print("\nNote: if you change env.py's observation/action space or")
     print("OR_ENTROPY_THRESHOLD, delete old .pt/.csv/progress files before")
     print("running fresh, or --resume will load stale/invalid state.")
+
 
 
 if __name__ == "__main__":
